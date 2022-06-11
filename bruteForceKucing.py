@@ -1,7 +1,3 @@
-# https://stackoverflow.com/questions/31497021/knapsack-with-requirement-to-select-one-item-each-from-many-sets
-# heuristik: tikda bisa dijelaskan secara matematis, 
-# karena menggunakan terkaan, intuisi, dan common sense
-
 from itertools import product
 import time
 
