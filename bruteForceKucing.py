@@ -1,12 +1,35 @@
-from itertools import product
+from itertools import product, chain, combinations
 import time
 
-def anycomb(item1, item2, item3):
-    comb = []
-    for combi in product(item1, item2, item3):
-        comb.append(combi)
-    return (comb)
+def powerset(iterable):
+    s = list(iterable)
+    return chain.from_iterable(combinations(s, r) for r in range(len(s)+1))
 
+def get_combi(item):
+    combi = []
+    for x in range(len(item)):
+        comb = []
+        for combo in powerset(item[x]):
+            comb.append(combo)
+        combi.append(comb)
+    return combi
+
+def pilih(comb, duit):
+    totHarga=0
+    total = []
+    for item in comb:
+        tot = []
+        for y in item:
+            nama = y
+            harga = sum([pair[1] for pair in y])
+            prot = sum([pair[2] for pair in y])
+            if harga<=duit and harga!=0:
+                tot.append([nama, harga, prot])
+        tot = max(tot, key=lambda tup: tup[2])
+        tot1 = max(tot[0], key=lambda tup: tup[2])
+        total.append(tot1)
+    return total
+                
 def totalvalue(comb):
     global duit
     totwt = totval = 0
@@ -37,28 +60,14 @@ itemset_3 = (
 
 duit = int(input("Masukkan anggaran: "))
 start = time.time()
-comb = anycomb(itemset_1, itemset_2, itemset_3)
-bagged = max(comb, key=totalvalue)
-for x in range(3):
-    bag = list(bagged[x])
-    if x==0:
-        bag.insert(0,"M. Kering")
-        bag1 = tuple(bag)
-    elif x==1:
-        bag.insert(0,"M. Basah")
-        bag2 = tuple(bag)
-    elif x==2:
-        bag.insert(0,"Susu")
-        bag3 = tuple(bag)
-bagged1 = (bag1,)+(bag2,)+(bag3,)
+item = [itemset_1, itemset_2, itemset_3]
+combi = get_combi(item)
+bagged = pilih(combi, duit)
 
-val, wt = totalvalue(bagged)
-if val==0 and wt==0:
-    print("Anggaran tidak cukup")
-else:
-    print("{:10}{:10}{:10}{:10}".format("Kategori", "Brand", "Harga", "Protein"))
-    print("\n".join("{:10}{:10}{:5}{:10}".format(*item) for item in bagged1))
-print("Total Biaya: %i, Total protein: %i" % (-wt, val))
-print("\n")
-end = time.time()
-print("The time of execution of above program is :", end-start)
+print("{:17}{:10}{:12}".format("Brand", "Harga", "Protein"))
+totalBiaya = totalProtein = 0
+for x in bagged:
+    print("{:17}{:5}{:12}".format(*x))
+    totalBiaya+=x[1]
+    totalProtein+=x[2]
+print("Total Biaya: {}, Total protein: {}".format(totalBiaya, totalProtein))
