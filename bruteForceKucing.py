@@ -71,3 +71,5 @@ for x in bagged:
     totalBiaya+=x[1]
     totalProtein+=x[2]
 print("Total Biaya: {}, Total protein: {}".format(totalBiaya, totalProtein))
+end = time.time()
+print("The time of execution of above program is :", end-start)
